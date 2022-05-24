@@ -5,6 +5,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 const port = 8000
 const mongo = require("./db/conn")
+const { v4: uuidv4 } = require('uuid');
 
 app.post("/adddata", async (req, res) => {
     const projectTitle = req.body.projectTitle
@@ -50,9 +51,22 @@ app.post("/adddata", async (req, res) => {
     }
 
     const insData = await mongo.db("hp").collection("data").insertOne({
-        projectTitle, projectDescription, appstore_link, playstore_link, website_link, front_end_techstack, back_end_techstack, media: screenshotsVideos
+        _id: uuidv4(), projectTitle, projectDescription, appstore_link, playstore_link, website_link, front_end_techstack, back_end_techstack, media: screenshotsVideos
     })
     res.send({ msg: "data inseted successfully.", insData })
+    res.end()
+})
+
+app.get("/finddata/:_id", async (req, res) => {
+    const _id = req.params._id
+
+    const findData = await mongo.db("hp").collection("data").findOne({ _id })
+
+    if (!findData) {
+        return res.send({ error: `no data found with this id.` })
+    }
+
+    res.send({ msg: "data found successfully.", findData })
     res.end()
 })
 
