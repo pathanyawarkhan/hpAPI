@@ -22,7 +22,7 @@ app.post("/adddata", async (req, res) => {
     }
 
     if (typeof projectDescription !== "string") {
-        return res.send({ error: "projectTitle must be in string." })
+        return res.send({ error: "projectDescription must be in string." })
     }
 
     if (typeof appstore_link !== "string") {
